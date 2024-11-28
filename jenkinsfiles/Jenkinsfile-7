@@ -1,0 +1,41 @@
+pipeline {
+    agent any
+    stages {
+        stage('Deploy to Environments') {
+            steps {
+                script {
+                    def environments = ['dev', 'staging', 'production']
+                    def currentHour = new Date().format('HH', TimeZone.getTimeZone('UTC')).toInteger()
+
+                    environments.each { env ->
+                        echo "Starting deployment for: ${env}"
+                        
+                        if (env == 'production' && (currentHour < 9 || currentHour > 17)) {
+                            echo "Skipping production deployment outside working hours."
+                            return
+                        }
+
+                        switch (env) {
+                            case 'dev':
+                                echo "Running development tests..."
+                                sh 'echo Deploying to Development Environment'
+                                break
+                            case 'staging':
+                                echo "Running staging smoke tests..."
+                                sh 'echo Deploying to Staging Environment'
+                                break
+                            case 'production':
+                                echo "Notifying team about production deployment..."
+                                sh 'echo Deploying to Production Environment'
+                                break
+                            default:
+                                echo "Unknown environment: ${env}"
+                        }
+
+                        echo "Completed deployment for: ${env}"
+                    }
+                }
+            }
+        }
+    }
+}

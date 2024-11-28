@@ -1,0 +1,53 @@
+pipeline {
+    agent any
+    parameters {
+        string(name: 'MY_STRING', defaultValue: 'Hello', description: 'String Param')
+        booleanParam(name: 'MY_BOOLEAN', defaultValue: true, description: 'Boolean Param')
+        choice(name: 'MY_CHOICE', choices: ['Option 1', 'Option 2'], description: 'Choice Param')
+    }
+    stages {
+        stage('Example Expressions') {
+            when {
+                anyOf {
+                    expression { params.MY_STRING == 'Hello' }
+                    expression { params.MY_BOOLEAN == true }
+                }
+            }
+            steps {
+                echo "AnyOf condition met"
+            }
+        }
+        
+        stage('AllOf Example') {
+            when {
+                allOf {
+                    expression { params.MY_STRING == 'Hello' }
+                    expression { params.MY_BOOLEAN == true }
+                }
+            }
+            steps {
+                echo "AllOf condition met"
+            }
+        }
+        
+        stage('Branch Example') {
+            when {
+                branch 'main'
+            }
+            steps {
+                echo "Main branch"
+            }
+        }
+
+        stage('Not Example') {
+            when {
+                not {
+                    expression { params.MY_CHOICE == 'Option 1' }
+                }
+            }
+            steps {
+                echo "Not condition met"
+            }
+        }
+    }
+}

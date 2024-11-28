@@ -1,0 +1,29 @@
+pipeline {
+    agent any
+    parameters {
+        string(name: 'MY_STRING', defaultValue: 'Hello, World!', description: 'A simple string parameter')
+        booleanParam(name: 'MY_BOOLEAN', defaultValue: true, description: 'A boolean parameter (true or false)')
+        choice(name: 'MY_CHOICE', choices: ['Option 1', 'Option 2', 'Option 3'], description: 'Choose one of the options')
+        password(name: 'MY_PASSWORD', defaultValue: 'password123', description: 'A password parameter')
+        file(name: 'MY_FILE', description: 'Upload a file to be used in the pipeline')
+        text(name: 'MY_TEXT', defaultValue: 'This is a multi-line text parameter.', description: 'A multi-line text input')
+    }
+    stages {
+        stage('Parameter Visualization') {
+            steps {
+                script {
+                    echo "String Parameter: ${params.MY_STRING}"
+                    echo "Boolean Parameter: ${params.MY_BOOLEAN}"
+                    echo "Choice Parameter: ${params.MY_CHOICE}"
+                    echo "Password Parameter: ${params.MY_PASSWORD}"
+                    echo "Text Parameter: ${params.MY_TEXT}"
+                    if (params.MY_FILE) {
+                        echo "File Parameter Uploaded: ${params.MY_FILE}"
+                    } else {
+                        echo "No file uploaded."
+                    }
+                }
+            }
+        }
+    }
+}
